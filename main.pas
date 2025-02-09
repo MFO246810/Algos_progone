@@ -67,41 +67,57 @@ function sizeOfList(var Head: PNode): Integer;
         sizeOfList := size;
     end;
 
-procedure Sort(Head);
+procedure Sort(var Head: PNode);
     var
         curr: PNode; temp: PNode; inside: PNode; Key: Integer; TempData: Integer;
     begin
+        if Head = Nil then 
+        begin
+            writeln('List is empty, nothing to sort.');
+            Exit;
+        end;
+    
+        begin
+        TempData := 0;
         curr := Head;
         inside := Head;
-        while curr^.next <> Nil do 
+        while curr <> Nil do 
             begin
                 inside := curr^.next;
                 Key := curr^.data;
-                while inside^.next <> Nil do
+                while inside <> Nil do
                     begin
-                        if(key <= inside^.data) then 
+                        if(inside^.data <= Key) then 
                             begin
-                                key := inside ^.data;
-
+                                TempData := Key;
+                                curr^.data := inside^.data;
+                                Key := inside^.data;
+                                inside^.data :=  TempData;
                             end;
-                        inside = inside^.next 
+                        inside := inside^.next 
                     end;
-                TempData = curr-> data
                 
                 curr := curr^.next;
             end;
 
+        end;
     end;
+
 
 begin
     New(Head);
+    Head := Nil;
     AppendToList(Head, 5);
+    AppendToList(Head, 95);
     AppendToList(Head, 20);
     AppendToList(Head, 10);
     AppendToList(Head, 15);
     AppendToList(Head, 8);
-    AppendToList(Head, 95);
-    writeln(sizeOfList(Head));
+    TraverseList(Head);
+    write('Size of List is: ');
+    write(sizeOfList(Head));
+    writeln();
+    Sort(Head);
     TraverseList(Head);
     
 end.
