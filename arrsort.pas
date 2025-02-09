@@ -42,12 +42,49 @@ procedure SelectionSort(var arr: array of Integer; n: Integer);
                 arr[min_idx] := temp;
             end;
     end;
-{
-Procedure QuickSortV1(var arr: array of Integer);
-    begin
 
+function HPartition(var arr: array of Integer; low, high: Integer): Integer;
+    var
+        pivot: Integer; i: Integer; j: Integer; temp: Integer;
+    begin
+        pivot := arr[low];   
+        i := low - 1;        
+        j := high + 1;
+
+        while true do 
+            begin
+                repeat
+                    i := i + 1;
+                until arr[i] >= pivot;
+
+                repeat
+                    j := j - 1;
+                until arr[j] <= pivot;
+
+                if i >= j then 
+                begin
+                    HPartition := j; 
+                    Exit;
+                end; 
+
+                temp := arr[i];
+                arr[i] := arr[j];
+                arr[j] := temp;
+            end;
     end;
 
+Procedure QuickSortV1(var arr: array of Integer; low: Integer; high: Integer);
+    var
+        p: Integer;
+    begin
+        if low < high then
+            begin
+                p := HPartition(arr, low, high);  
+                QuickSortV1(arr, low, p);    
+                QuickSortV1(arr, p + 1, high); 
+            end;
+    end;
+{
 procedure QuickSortV2(var arr: array of Integer);
     begin
 
@@ -69,6 +106,6 @@ begin
     Test[2] := 3;
     Test[3] := 40;
     Test[4] := 1000;
-    SelectionSort(Test, 5);
+    QuickSortV1(Test,0,4);
     writeln('Array values: ', Test[0], ', ', Test[1], ', ', Test[2], ', ', Test[3], ', ', Test[4]);
 end.
