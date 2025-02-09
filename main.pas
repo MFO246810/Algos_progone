@@ -67,7 +67,7 @@ function sizeOfList(var Head: PNode): Integer;
         sizeOfList := size;
     end;
 
-procedure Sort(var Head: PNode);
+procedure Sort(var Head: PNode); 
     var
         curr: PNode; temp: PNode; inside: PNode; Key: Integer; TempData: Integer;
     begin
