@@ -73,6 +73,62 @@ function HPartition(var arr: array of Integer; low, high: Integer): Integer;
             end;
     end;
 
+function MedianOfThree(var arr: array of Integer; low, high: Integer): Integer;
+    var
+        mid: Integer; temp: Integer;
+    begin
+        mid := (low + high) div 2;
+
+        if arr[low] > arr[mid] then
+            begin
+                temp := arr[low];
+                arr[low] := arr[mid];
+                arr[mid] := temp;
+            end;
+        if arr[low] > arr[high] then
+            begin
+                temp := arr[low];
+                arr[low] := arr[high];
+                arr[high] := temp;
+            end;
+        if arr[mid] > arr[high] then
+            begin
+                temp := arr[mid];
+                arr[mid] := arr[high];
+                arr[high] := temp;
+            end;
+        MedianOfThree := arr[mid];
+    end;
+
+function MPartition (var arr: array of Integer; low, high, pivot: Integer): Integer;
+    var
+        i: Integer; j: Integer; temp: Integer;
+    begin  
+        i := low - 1;        
+        j := high + 1;
+
+        while true do 
+            begin
+                repeat
+                    i := i + 1;
+                until arr[i] >= pivot;
+
+                repeat
+                    j := j - 1;
+                until arr[j] <= pivot;
+
+                if i >= j then 
+                begin
+                    MPartition := j; 
+                    Exit;
+                end; 
+
+                temp := arr[i];
+                arr[i] := arr[j];
+                arr[j] := temp;
+            end;
+    end;
+
 Procedure QuickSortV1(var arr: array of Integer; low: Integer; high: Integer);
     var
         p: Integer;
@@ -84,12 +140,21 @@ Procedure QuickSortV1(var arr: array of Integer; low: Integer; high: Integer);
                 QuickSortV1(arr, p + 1, high); 
             end;
     end;
-{
-procedure QuickSortV2(var arr: array of Integer);
-    begin
 
+procedure QuickSortV2(var arr: array of Integer; low: Integer; high: Integer);
+    var
+        p, pivot: Integer;
+    begin
+        if low < high then
+            begin
+                pivot := MedianOfThree(arr, low, high);
+                p := MPartition(arr, low, high, pivot);  
+                QuickSortV2(arr, low, p-1);    
+                QuickSortV2(arr, p + 1, high); 
+            end;
     end;
 
+{
 procedure MergeSort(var arr: array of Integer);
     begin
 
@@ -106,6 +171,6 @@ begin
     Test[2] := 3;
     Test[3] := 40;
     Test[4] := 1000;
-    QuickSortV1(Test,0,4);
+    QuickSortV2(Test,0,4);
     writeln('Array values: ', Test[0], ', ', Test[1], ', ', Test[2], ', ', Test[3], ', ', Test[4]);
 end.
