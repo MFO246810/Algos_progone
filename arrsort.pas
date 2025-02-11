@@ -1,8 +1,16 @@
 program ArrSort;
+uses SysUtils;
 
 var
-    Test: array [0..5] of Integer; result: Boolean;
-
+    Test, tempArray: array of Integer; result: Boolean; n, i: Integer; OutputFile: TextFile;
+procedure WriteArrayToFile(var F: TextFile; const arr: array of Integer);
+    var
+        i: Integer;
+    begin
+        for i := 0 to High(arr) do
+            Write(F, arr[i], ' ');
+        Writeln(F);
+    end;
 procedure BubbleSort(var arr: array of Integer; n: Integer);
     var
         i: Integer; j: Integer; temp: Integer;
@@ -149,7 +157,7 @@ procedure QuickSortV2(var arr: array of Integer; low: Integer; high: Integer);
             begin
                 pivot := MedianOfThree(arr, low, high);
                 p := MPartition(arr, low, high, pivot);  
-                QuickSortV2(arr, low, p-1);    
+                QuickSortV2(arr, low, p);    
                 QuickSortV2(arr, p + 1, high); 
             end;
     end;
@@ -247,28 +255,76 @@ function IsSorted(var arr: array of Integer; i, n: Integer): Boolean;
         IsSorted := IsSorted(arr, i + 1, n);
     end; 
 
+function GenerateRandomValue(): Integer;
+    begin
+        GenerateRandomValue := Random(1001);
+    end;
 
 begin
-    Test[0] := 10;
-    Test[1] := 20;
-    Test[2] := 3;
-    Test[3] := 40;
-    Test[4] := 1000;
-    Test[5] := 50;
-    result := IsSorted(Test, 0, 6);
-    if result then
-        writeln('sorted')
-    else
+    Randomize;
+    SetLength(Test, 100);
+
+    for i := 0 to 100 - 1 do
+        Test[i] := GenerateRandomValue;
+
+    Assign(OutputFile, 'arrsort.txt');
+    Rewrite(OutputFile);
+    Writeln(OutputFile, 'Unsorted');
+    WriteArrayToFile(OutputFile, Test);
+
+    (* Perform sorting and write results *)
+    tempArray := Copy(Test, 0, 100);
+    SelectionSort(tempArray, 100);
+    writeln(OutputFile);
+    if IsSorted(tempArray, 0, 100) then
         begin
-            writeln('unsorted');
+            Writeln(OutputFile, '[Sorted]');
         end;
-    MergeSort(Test,0,5);
-    result := IsSorted(Test, 0, 6);
-    if result then
-        writeln('sorted')
-    else
+    Writeln(OutputFile, 'Selection Sort:');
+    WriteArrayToFile(OutputFile, tempArray);
+
+    tempArray := Copy(Test, 0, 100);
+    BubbleSort(tempArray, 100);
+    writeln(OutputFile);
+    if IsSorted(tempArray, 0, 100) then
         begin
-            writeln('unsorted');
+            Writeln(OutputFile, '[Sorted]');
         end;
-    PrintArray(Test, 6);
+    Writeln(OutputFile, 'Bubble Sort:');
+    WriteArrayToFile(OutputFile, tempArray);
+
+    tempArray := Copy(Test, 0, 100);
+    MergeSort(tempArray, 0, High(tempArray));
+    writeln(OutputFile);
+    if IsSorted(tempArray, 0, 100) then
+        begin
+            Writeln(OutputFile, '[Sorted]');
+        end;
+    Writeln(OutputFile, 'Merge Sort:');
+    WriteArrayToFile(OutputFile, tempArray);
+
+    tempArray := Copy(Test, 0, 100);
+    QuickSortV1(tempArray, 0, High(tempArray));
+    writeln(OutputFile);
+    if IsSorted(tempArray, 0, 100) then
+        begin
+            Writeln(OutputFile, '[Sorted]');
+        end;
+    Writeln(OutputFile, 'QuickSort (Hoare Partition):');
+    WriteArrayToFile(OutputFile, tempArray);
+
+    tempArray := Copy(Test, 0, 100);
+    QuickSortV2(tempArray, 0, High(tempArray));
+    writeln(OutputFile);
+    if IsSorted(tempArray, 0, 100) then
+        begin
+            Writeln(OutputFile, '[Sorted]');
+        end;
+    Writeln(OutputFile, 'QuickSort (Median Partition):');
+    WriteArrayToFile(OutputFile, tempArray);
+
+    (* Close file *)
+    Close(OutputFile);
+
+    Writeln('Sorting report saved to arrsort.txt');
 end.
