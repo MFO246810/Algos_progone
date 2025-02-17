@@ -82,6 +82,25 @@ function Add(var x, y: Big_Int): Big_Int;
         Exit(sum); 
     end;
 
+function ModuloBigInt(var num: TBigInt; divisor: Integer): Integer;
+var
+  i, remainder: Integer;
+begin
+  remainder := 0;
+  for i := 0 to num.length - 1  do
+  begin
+    remainder := (remainder * 10 + num.digits[i]) mod divisor;
+  end;
+  Exit(remainder);  
+end;
+
+function IsPrime(var n: Big_Int): Boolean;
+    var
+
+    begin
+
+    end;
+
 begin
     Randomize;
 
