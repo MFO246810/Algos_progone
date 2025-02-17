@@ -4,14 +4,15 @@ uses sysutils;
 const 
     Max_Digits = 256;
 
-type Big_Int = record
-    values:array of Integer;
-    capacity: Integer;
-    length: Integer;
-end;
+type 
+    Big_Int = record
+        values: array of Integer;
+        capacity: Integer;
+        length: Integer;
+    end;
 
 var 
-    x, y, total : Big_Int; 
+    x, y, n, total: Big_Int; 
 
 procedure Initalize(var num: Big_Int; size: Integer);
     begin
@@ -19,22 +20,37 @@ procedure Initalize(var num: Big_Int; size: Integer);
         num.length := 0;    
         num.capacity := Max_Digits;       
     end;
+
 function GenerateRandomValue(): Integer;
     begin
         GenerateRandomValue := Random(9);
     end;
+
 procedure AppendToBigInt(var num: Big_Int);
     var 
-        val, i :Integer; 
+        val, i: Integer; 
     begin 
-        for i:= 0 to Max_Digits - 1 do 
-            Begin
+        for i := 0 to Max_Digits - 1 do 
+            begin
                 val := GenerateRandomValue;
                 num.values[num.length] := val;
                 num.length := num.length + 1;
             end;
     end;
-procedure AddDigit (var num: Big_Int; val : Integer);
+
+function BigIntToInteger(var num: Big_Int): Integer;
+    var
+        i, result: Integer;
+    begin
+        result := 0;
+        for i := 0 to num.length - 1 do
+            begin
+                result := result * 10 + num.values[i];  { Assuming least significant digit first }
+            end;
+        BigIntToInteger := result;
+    end;
+
+procedure AddDigit(var num: Big_Int; val: Integer);
     begin 
         num.values[num.length] := val;
         num.length := num.length + 1;
@@ -42,17 +58,18 @@ procedure AddDigit (var num: Big_Int; val : Integer);
 
 procedure PrintBig_Int(var num: Big_Int; title: string);
     var 
-        i : Integer;
+        i: Integer;
     begin
         write(title);
-        for i:=0 to Max_Digits - 1 do
-            write(num.values[i])
+        for i := 0 to num.length - 1 do
+            write(num.values[i]);
+        writeln;
     end;
 
 function Add(var x, y: Big_Int): Big_Int;
     var 
         sum: Big_Int;
-        carry, digitsum: Integer;
+        carry, digitSum: Integer;
         p1, p2: Integer;
     begin 
         Initalize(sum, Max_Digits);
@@ -79,39 +96,81 @@ function Add(var x, y: Big_Int): Big_Int;
                 carry := digitSum div 10;
                 AddDigit(sum, digitSum mod 10);
             end;
-        Exit(sum); 
+    Exit(sum); 
     end;
 
-function ModuloBigInt(var num: TBigInt; divisor: Integer): Integer;
-var
-  i, remainder: Integer;
-begin
-  remainder := 0;
-  for i := 0 to num.length - 1  do
-  begin
-    remainder := (remainder * 10 + num.digits[i]) mod divisor;
-  end;
-  Exit(remainder);  
-end;
-
-function IsPrime(var n: Big_Int): Boolean;
+function ModuloBigInt(var num: Big_Int; divisor: Integer): Integer;
     var
-
+        i, remainder: Integer;
     begin
+        remainder := 0;
+        for i := 0 to num.length - 1  do
+            begin
+            remainder := (remainder * 10 + num.values[i]) mod divisor;
+            end;
+        Exit(remainder);  
+    end;
 
+function FastIsPrime(var n: Big_Int): Boolean;
+    var
+        i, res: Integer;
+    begin
+        res := BigIntToInteger(n);
+        if res <= 1 then
+            Exit(False);  
+
+        for i := 2 to Trunc(Sqrt(res)) do
+            begin
+                if ModuloBigInt(n, i) = 0 then
+                    begin
+                        Exit(False);  
+                    end;
+            end;
+            Exit(True);
+    end;
+
+function SlowIsPrime(var n: Big_Int): Boolean;
+    var
+        i, res: Integer;
+    begin
+        res := BigIntToInteger(n);
+        if res <= 1 then
+            Exit(False);  
+
+        for i := 2 to res-1 do
+            begin
+                if ModuloBigInt(n, i) = 0 then
+                    begin
+                        Exit(False);  
+                    end;
+            end;
+            Exit(True);
     end;
 
 begin
     Randomize;
-
+    Initalize(n, Max_Digits);
     Initalize(x, Max_Digits);
     Initalize(y, Max_Digits);
     AppendToBigInt(x);
     AppendToBigInt(y);
+    AppendToBigInt(n);
     total := Add(x, y);
+    
     PrintBig_Int(x, 'X: ');
-    writeln();
     PrintBig_Int(y, 'Y: ');
-    writeln();
+    PrintBig_Int(n, 'n: ');
+
+    if FastIsPrime(n) then 
+    begin
+        write('This number is prime: ');
+        PrintBig_Int(n, 'n: ');
+    end
+    else 
+    begin
+        write('This number is not prime: ');
+        PrintBig_Int(n, 'n: ');
+    end;
+
     PrintBig_Int(total, 'Total: ');
 end.
