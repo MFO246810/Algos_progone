@@ -1,4 +1,4 @@
-program Dll;
+program intlist;
 
 type
     PNode = ^Node;  
@@ -8,7 +8,7 @@ type
         next: PNode;
     end;
 
-var head: PNode;
+var head, curr: PNode; 
 
 procedure AppendToList(var Head: PNode; val: Integer);  
     var
@@ -103,44 +103,82 @@ procedure Sort(var Head: PNode);
         end;
     end;
 
-function SPartition(var Head: PNode; low, high: Integer): Integer;
-
-
-
-procedure RecSort(var Head, Beg, end: PNode);
+function Partition(var head, tail: PNode): PNode;
     var
-        pivot: Integer; i: Integer; j: Integer; temp: Integer;
+        pivot: Integer;
+        i, j: PNode;
+        temp: Integer;
     begin
-        if Head = Nil or Head^.next = Nil then
-            EXIT;
-        pivot := Head^.data;   
-        i := low - 1;        
-        j := high + 1;
+        pivot := tail^.data;  
+        i := head;
+        j := head;
 
-        while true do 
+        while (j <> tail) do
+        begin
+            if (j^.data <= pivot) then
             begin
-                repeat
-                    m := m + 1;
-                    i := i + 1;
-                until arr[i] >= pivot;
-
-                repeat
-                    m := m + 1;
-                    j := j - 1;
-                until arr[j] <= pivot;
-
-                if i >= j then 
-                begin
-                    m := m + 1;
-                    HPartition := j; 
-                    Exit;
-                end; 
-
-                m := m + 1;
-                temp := arr[i];
-                arr[i] := arr[j];
-                arr[j] := temp;
+            temp := i^.data;
+            i^.data := j^.data;
+            j^.data := temp;
+            i := i^.next;
             end;
+            j := j^.next;
+        end;
+
+        temp := i^.data;
+        i^.data := tail^.data;
+        tail^.data := temp;
+
+        Partition := i;
+    end;
+
+procedure QuickSort(var head, tail: PNode);
+    var
+        pivot: PNode;
+    begin
+        if (head <> nil) and (tail <> nil) and (head <> tail) then
+        begin
+            pivot := Partition(head, tail);
+
+            if (pivot <> head) then
+                QuickSort(head, pivot^.prev);
+
+            if (pivot <> tail) then
+                QuickSort(pivot^.next, tail);
+        end;
+    end;
+
+procedure RemoveDuplicates(var head: PNode);
+    var
+        curr, check, temp: PNode;
+    begin
+        curr := head;
+
+        while (curr <> nil) and (curr^.next <> nil) do
+            begin
+                check := curr^.next;
+
+            while (check <> nil) do
+                begin
+                    if (check^.data = curr^.data) then
+                        begin
+                            temp := check;
+                            check := check^.next;
+
+                            if (temp^.prev <> nil) then
+                                temp^.prev^.next := temp^.next;
+                
+                            if (temp^.next <> nil) then
+                                temp^.next^.prev := temp^.prev;
+                
+                            Dispose(temp);
+                        end
+                    else
+                        check := check^.next;
+            end;
+
+            curr := curr^.next;
+        end;
     end;
 
 begin
@@ -152,11 +190,16 @@ begin
     AppendToList(Head, 10);
     AppendToList(Head, 15);
     AppendToList(Head, 8);
-    TraverseList(Head);
+    curr := Head;
     write('Size of List is: ');
     write(sizeOfList(Head));
     writeln();
-    Sort(Head);
+    while(curr^.next <> Nil) do
+        begin
+            curr := curr^.next;
+        end;
+    
+    QuickSort(Head, curr);
     TraverseList(Head);
     
 end.
