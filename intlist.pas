@@ -103,6 +103,45 @@ procedure Sort(var Head: PNode);
         end;
     end;
 
+function SPartition(var Head: PNode; low, high: Integer): Integer;
+
+
+
+procedure RecSort(var Head, Beg, end: PNode);
+    var
+        pivot: Integer; i: Integer; j: Integer; temp: Integer;
+    begin
+        if Head = Nil or Head^.next = Nil then
+            EXIT;
+        pivot := Head^.data;   
+        i := low - 1;        
+        j := high + 1;
+
+        while true do 
+            begin
+                repeat
+                    m := m + 1;
+                    i := i + 1;
+                until arr[i] >= pivot;
+
+                repeat
+                    m := m + 1;
+                    j := j - 1;
+                until arr[j] <= pivot;
+
+                if i >= j then 
+                begin
+                    m := m + 1;
+                    HPartition := j; 
+                    Exit;
+                end; 
+
+                m := m + 1;
+                temp := arr[i];
+                arr[i] := arr[j];
+                arr[j] := temp;
+            end;
+    end;
 
 begin
     New(Head);
