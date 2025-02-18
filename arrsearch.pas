@@ -1,9 +1,9 @@
 program ArrSearch;
 uses SysUtils;
 
-const size = 8000;
+const size = 100;
 var
-   arr :array of Integer; i, first, last, key : Integer; m:LongInt;
+   arr, keys :array of Integer; i, first, last, key : Integer; m:LongInt; outputFile: TextFile;
 
 function GenerateRandomValue(): Integer;
     begin
@@ -22,9 +22,9 @@ procedure BubbleSort(var arr: array of Integer; n: Integer);
             begin
                 m := m + 1; 
                 for j:= 0 to n - i - 2 do
-                    m := m + 1;
+                    
                     begin
-                         
+                        m := m + 1;
                         if(arr[j] > arr[j + 1]) then 
                             begin
                                     temp := arr[j];
@@ -81,17 +81,16 @@ procedure BinarySearch(var arr: array of Integer; key, low, high: Integer; var f
 
     end;
 
-procedure PrintArray(Var arr: array of Integer; n: integer);
+procedure PrintArray(Var arr: array of Integer; n: integer; var f: TextFile);
     var
         i: integer;
     begin
         m := m + 1;
-        write('Current Array: ');
         m := m + 1;
         writeln();
         for i := 0 to n-1 do
             begin
-                write(arr[i], ' ');
+                write(f, arr[i], ' ');
                 m := m + 1;
                 writeln();
             end;
@@ -99,10 +98,14 @@ procedure PrintArray(Var arr: array of Integer; n: integer);
 
 
 begin 
+    Randomize;
+    Assign(outputFile, 'arrsearch.txt');  
+    Rewrite(outputFile);
     m := 0;
     Randomize;
     m := m + 1;
     SetLength(arr, size);
+    SetLength(Keys, 10);
     m := m + 1;
     key := GenerateRandomValue;
     m := m + 1;
@@ -116,22 +119,33 @@ begin
             m := m + 1;
             arr[i] := GenerateRandomValue;
         end;
+    for i := 0 to 9 do
+        begin
+            m := m + 1;
+            Keys[i] := GenerateRandomValue;
+        end;
     m := m + 1; 
     BubbleSort(arr, size);
     m := m + 1;
-    PrintArray(arr, size);
+    Write(outputFile, 'Array: ');
+    PrintArray(arr, size, outputFile);
     m := m + 1;
-    Writeln('Key: ', key);
-    m := m + 1;
-    BinarySearch(arr, key, 0, size-1, first, last);
-    if first <> -1 then
-        begin
-            m := m + 1;
-            writeln('First occurrence: ', first, ', Last occurrence: ', last)
-        end
-    else
-        m := m + 1;
-        writeln('Element not found.');
-    m := m + 1;
-    writeln('Number of operations: ', m)
+     for i := 0 to 9 do
+    begin
+        writeln(outputFile);
+        Write(outputFile, 'Key: ', Keys[i]);
+        writeln(outputFile);
+        
+        // Perform binary search
+        BinarySearch(arr, Keys[i], 0, size - 1, first, last);
+        
+        if first <> -1 then
+            writeln(outputFile, 'First occurrence: ', first, ', Last occurrence: ', last)
+        else
+            writeln(outputFile, 'Element not found.');
+    end;
+
+    // Write the number of operations to the output file
+    writeln(outputFile, 'Number of operations: ', m);
+    Close(outputFile);
 end.

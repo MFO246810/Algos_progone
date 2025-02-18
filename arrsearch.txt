@@ -1,0 +1,31 @@
+Array: 5 31 34 36 37 40 46 69 74 76 80 86 88 98 111 129 130 133 144 144 162 165 173 178 184 191 192 228 244 245 259 262 265 292 303 326 367 385 397 399 400 409 425 434 447 456 462 470 475 479 486 508 538 546 563 564 576 585 594 600 604 615 630 631 634 646 653 657 663 702 702 703 709 711 721 729 732 736 758 763 768 787 790 790 796 814 820 823 825 840 845 849 859 882 893 918 919 923 924 949 
+Key: 278
+Element not found.
+
+Key: 288
+Element not found.
+
+Key: 357
+Element not found.
+
+Key: 389
+Element not found.
+
+Key: 768
+First occurrence: 80, Last occurrence: 80
+
+Key: 714
+First occurrence: 80, Last occurrence: 80
+
+Key: 840
+First occurrence: 80, Last occurrence: 89
+
+Key: 1000
+First occurrence: 80, Last occurrence: 89
+
+Key: 383
+First occurrence: 80, Last occurrence: 89
+
+Key: 706
+First occurrence: 80, Last occurrence: 89
+Number of operations: 10263
